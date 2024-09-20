@@ -167,4 +167,60 @@ contract FundMeTest is Test {
                 fundMe.getOwner().balance - startingOwnerBalance
         );
     }
+
+    function testCheaperWithdrawFromASingleFunder() public fundTestUser {
+        // Get the data needed to complete this test
+        uint256 startingFundMeBalance = address(fundMe).balance;
+        uint256 startingOwnerBalance = fundMe.getOwner().balance;
+
+        // Perform the action we want to test
+
+        vm.prank(fundMe.getOwner());
+        fundMe.cheaperWithdraw();
+
+        // Validate whether the code worked as expected.
+        uint256 endingFundMeBalance = address(fundMe).balance;
+        uint256 endingOwnerBalance = fundMe.getOwner().balance;
+        assertEq(endingFundMeBalance, 0);
+        assertEq(
+            startingFundMeBalance + startingOwnerBalance,
+            endingOwnerBalance // + gasUsed
+        );
+    }
+
+    function testCheaperWithdrawFromMultipleFunders() public fundTestUser {
+        uint160 numberOfFunders = 10;
+        uint160 startingFunderIndex = 2;
+
+        // Create addresses for all the 10 funders
+        for (
+            uint160 i = startingFunderIndex;
+            i < numberOfFunders + startingFunderIndex;
+            i++
+        ) {
+            hoax(address(i), STARTING_USER_BALANCE);
+            fundMe.fund{value: SEND_VALUE}();
+        }
+
+        // Get the balances before making the withdraw call
+        uint256 startingFundMeBalance = address(fundMe).balance;
+        uint256 startingOwnerBalance = fundMe.getOwner().balance;
+
+        // Perform actual operation
+        vm.startPrank(fundMe.getOwner());
+        fundMe.cheaperWithdraw();
+        vm.stopPrank();
+
+        assert(address(fundMe).balance == 0);
+        assert(
+            startingFundMeBalance + startingOwnerBalance ==
+                fundMe.getOwner().balance
+        );
+
+        uint256 totalAmountToBeWithdrawn = (numberOfFunders + 1) * SEND_VALUE;
+        assert(
+            totalAmountToBeWithdrawn ==
+                fundMe.getOwner().balance - startingOwnerBalance
+        );
+    }
 }

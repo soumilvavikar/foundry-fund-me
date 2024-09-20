@@ -34,7 +34,7 @@ contract FundMe {
     uint256 public constant MINIMUM_USD = 5e18; // 5 * 1e18
 
     // List of funders
-    address[] private funders;
+    address[] private s_funders;
 
     // The variable that will be set only once can be set as immutatble. immutable keywor helps with gas savings
     address private immutable i_owner;
@@ -49,7 +49,7 @@ contract FundMe {
     }
 
     // Map of the funder and the amount funded
-    mapping(address => uint256) private addressToAmountFunded;
+    mapping(address => uint256) private s_addressToAmountFunded;
 
     /**
      * This method will allow users to send $, have a check for minimum $ that can be sent
@@ -75,8 +75,32 @@ contract FundMe {
         // A revert will undo the action done so far, and send the remaining gas back.
 
         // msg.sender contains the address of the sender.
-        funders.push(msg.sender);
-        addressToAmountFunded[msg.sender] += msg.value;
+        s_funders.push(msg.sender);
+        s_addressToAmountFunded[msg.sender] += msg.value;
+    }
+
+    /**
+     * This function is a cheaper function to withdraw. Better coding practices
+     */
+    function cheaperWithdraw() public isOwner {
+        // Anytime we read from storage, we spend 100 gas. Hence reading funders from storage once and storing it in function level variable to avoid reading from storage again ana again 
+        address[] memory funders = s_funders;
+        // mappings can't be in memory, sorry!
+        for (
+            uint256 funderIndex = 0;
+            funderIndex < funders.length;
+            funderIndex++
+        ) {
+            address funder = funders[funderIndex];
+            s_addressToAmountFunded[funder] = 0;
+        }
+        s_funders = new address[](0);
+
+        (bool callSuccess, ) = i_owner.call{value: address(this).balance}("");
+
+        if (!callSuccess) {
+            revert FundMe__CallFailed();
+        }
     }
 
     /**
@@ -88,15 +112,15 @@ contract FundMe {
 
         for (
             uint256 funderIndex = 0;
-            funderIndex < funders.length;
+            funderIndex < s_funders.length;
             funderIndex++
         ) {
-            address funder = funders[funderIndex];
-            addressToAmountFunded[funder] = 0;
+            address funder = s_funders[funderIndex];
+            s_addressToAmountFunded[funder] = 0;
         }
 
         // To reset an array, define a new array
-        funders = new address[](0);
+        s_funders = new address[](0);
 
         // withdraw the funds - 3 ways - transfer, send, and call
 
@@ -176,7 +200,7 @@ contract FundMe {
     function getAddressToAmountFunded(
         address fundingAddress
     ) public view returns (uint256) {
-        return addressToAmountFunded[fundingAddress];
+        return s_addressToAmountFunded[fundingAddress];
     }
 
     /**
@@ -191,7 +215,7 @@ contract FundMe {
      * @param index - index at which funder needs to be fetched
      */
     function getFunder(uint256 index) public view returns (address) {
-        return funders[index];
+        return s_funders[index];
     }
 
     /**
