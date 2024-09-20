@@ -29,20 +29,18 @@ contract FundMe {
     // This line tells that the price converter library has to be used for uint256 type of variables.
     using PriceConverter for uint256;
 
-    uint256 public myVal = 1;
-
     // Minimum USD that can be transferred
     // The constant keyword helps with gas savings
     uint256 public constant MINIMUM_USD = 5e18; // 5 * 1e18
 
     // List of funders
-    address[] public funders;
+    address[] private funders;
 
     // The variable that will be set only once can be set as immutatble. immutable keywor helps with gas savings
-    address public immutable i_owner;
+    address private immutable i_owner;
 
     // Defining AggregatorV3Interface
-    AggregatorV3Interface  s_priceFeed;
+    AggregatorV3Interface s_priceFeed;
 
     // Defining a constructor
     constructor(address priceFeed) {
@@ -51,7 +49,7 @@ contract FundMe {
     }
 
     // Map of the funder and the amount funded
-    mapping(address => uint256) public addressToAmountFunded;
+    mapping(address => uint256) private addressToAmountFunded;
 
     /**
      * This method will allow users to send $, have a check for minimum $ that can be sent
@@ -60,8 +58,6 @@ contract FundMe {
      * - Mark the function as payable to work with ETH
      */
     function fund() public payable {
-        myVal = myVal + 2;
-
         // 1e18 wei = 1ETH
         // This statement will requirement the transaction to have more than 1 ETH being sent in the request
 
@@ -71,7 +67,7 @@ contract FundMe {
         //     "Didn't send enough ETH..."
         // );
 
-        if (msg.value.getConversionRate(s_priceFeed) > MINIMUM_USD) {
+        if (msg.value.getConversionRate(s_priceFeed) <= MINIMUM_USD) {
             revert FundMe__NotEnoughETH();
         }
 
@@ -170,11 +166,46 @@ contract FundMe {
     }
 
     /**
+     * View / Pure function - They help us check the values in the contract level variables
+     */
+    /**
+     * @notice Gets the amount that an address has funded
+     *  @param fundingAddress the address of the funder
+     *  @return the amount funded
+     */
+    function getAddressToAmountFunded(
+        address fundingAddress
+    ) public view returns (uint256) {
+        return addressToAmountFunded[fundingAddress];
+    }
+
+    /**
      * This method will help us get the version of the AggregatorV3Interface
-     * view type -
      */
     function getVersion() public view returns (uint256) {
         return s_priceFeed.version();
+    }
+
+    /**
+     * Getter for funder at index
+     * @param index - index at which funder needs to be fetched
+     */
+    function getFunder(uint256 index) public view returns (address) {
+        return funders[index];
+    }
+
+    /**
+     * Get Contract Owner
+     */
+    function getOwner() public view returns (address) {
+        return i_owner;
+    }
+
+    /**
+     * Get Price Feed
+     */
+    function getPriceFeed() public view returns (AggregatorV3Interface) {
+        return s_priceFeed;
     }
 }
 

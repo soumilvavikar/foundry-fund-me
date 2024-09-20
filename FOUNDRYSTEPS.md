@@ -33,8 +33,18 @@ NOTE:
 - `coverage` command tells how many lines of the code inside the contract are covered
 - --fork-url command helps let foundry know that we need to use the following chain URL instead of spinning a blank chain
     - downside to this is that a lot of API calls will be made to the chain which will increase the cost 
+- Once we have setup the HelperConfig contract which helps setup Network configurations, with just anvil local chain started, we can run the Unit tests without passing the rpc_url for sepolia testnet or ethereum mainnet
+- Unit testing best practices - https://twitter.com/PaulRBerg/status/1624763320539525121
 
-## Enable Imports for Externqal Contracts
+## Check how much gas would a test cost
+Use `forge snapshot` command 
+```shell
+forge snapshot 
+forge snapshot --mt testWithdrawFromMultipleFunders
+```
+This command creates the .gas-snapshot file which contains the exact gas costs.  
+
+## Enable Imports for External Contracts
 ### Installing dependencies in Foundry to be used as imports
 Without installing dependencies in the foundry we would not be able to use the external contracts like "AggregatorV3Interface.sol"
 ```shell

@@ -35,6 +35,9 @@ contract HelperConfig is Script {
      */
     NetworkConfig public activeNetworkConfig;
 
+    /**
+     * Constructor to setup the activeNetworkConfig object
+     */
     constructor() {
         if (block.chainid == SEPOLIA_CHAIN_ID) {
             activeNetworkConfig = getSepoliaETHConfig();
@@ -75,14 +78,16 @@ contract HelperConfig is Script {
      *  - Return the mock contracts address
      */
     function createOrGetAnvilETHConfig() public returns (NetworkConfig memory) {
-
-        // If the address for priceFeed !=0, i.e. its created already, we should return that and not re-create it 
+        // If the address for priceFeed !=0, i.e. its created already, we should return that and not re-create it
         if (activeNetworkConfig.priceFeed != address(0)) {
             return activeNetworkConfig;
         }
 
         vm.startBroadcast();
-        MockV3Aggregator mockPriceFeed = new MockV3Aggregator(DECIMALS, INITIAL_PRICE);
+        MockV3Aggregator mockPriceFeed = new MockV3Aggregator(
+            DECIMALS,
+            INITIAL_PRICE
+        );
         vm.stopBroadcast();
 
         NetworkConfig memory anvilCOnfig = NetworkConfig({
