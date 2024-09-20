@@ -95,3 +95,8 @@ forge script script/DeployFundMe.s.sol
 ```
 
 NOTE: Pass the rpc key and secret for deploying on the blockchain. 
+
+### Deploy
+```shell
+forge script script/DeployFundMe.s.sol --rpc-url $RPC_URL --private-key $PRIVATE_KEY
+```
