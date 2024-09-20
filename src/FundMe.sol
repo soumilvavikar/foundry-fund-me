@@ -41,9 +41,13 @@ contract FundMe {
     // The variable that will be set only once can be set as immutatble. immutable keywor helps with gas savings
     address public immutable i_owner;
 
+    // Defining AggregatorV3Interface
+    AggregatorV3Interface  s_priceFeed;
+
     // Defining a constructor
-    constructor() {
+    constructor(address priceFeed) {
         i_owner = msg.sender;
+        s_priceFeed = AggregatorV3Interface(priceFeed);
     }
 
     // Map of the funder and the amount funded
@@ -67,7 +71,7 @@ contract FundMe {
         //     "Didn't send enough ETH..."
         // );
 
-        if (msg.value.getConversionRate() > MINIMUM_USD) {
+        if (msg.value.getConversionRate(s_priceFeed) > MINIMUM_USD) {
             revert FundMe__NotEnoughETH();
         }
 
@@ -170,9 +174,7 @@ contract FundMe {
      * view type -
      */
     function getVersion() public view returns (uint256) {
-        return
-            AggregatorV3Interface(0x694AA1769357215DE4FAC081bf1f309aDC325306)
-                .version();
+        return s_priceFeed.version();
     }
 }
 

@@ -11,9 +11,13 @@ import {FundMe} from "../src/FundMe.sol";
  * @notice NA
  */
 contract DeployFundMe is Script {
-    function run() external {
+    function run() external returns (FundMe) {
         vm.startBroadcast();
-        new FundMe();
+        // Address: 0x694AA1769357215DE4FAC081bf1f309aDC325306 >> fetched from https://docs.chain.link/data-feeds/price-feeds/addresses?network=ethereum&page=1 for Seplia Testnet
+        address priceFeedAdd = 0x694AA1769357215DE4FAC081bf1f309aDC325306;
+        FundMe fundMe = new FundMe(priceFeedAdd);
         vm.stopBroadcast();
+        
+        return fundMe;
     }
 }
