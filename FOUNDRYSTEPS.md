@@ -1,0 +1,64 @@
+# Foundry Steps Performed
+
+## Project Creation
+#### Folder Creation
+```shell
+mkdir foundry-fund-me
+```
+#### Opening VS Code 
+```shell
+code foundry-fund-me
+```
+#### Creating the empty Foundry Project
+```shell
+forge init --force
+```
+
+## Running JUnit Tests
+This command will compile the contract and run the tests in the test folder 
+```shell
+forge test
+
+forge test -mt <method name>
+
+forge test -mt testPriceFeedVersionIsAccurate
+```
+NOTE: 
+- Do `forge test --help` for more options
+- Pass -vv or -vvv to see stacetrace and console logs
+
+## Enable Imports for Externqal Contracts
+### Installing dependencies in Foundry to be used as imports
+Without installing dependencies in the foundry we would not be able to use the external contracts like "AggregatorV3Interface.sol"
+```shell
+forge install <github repo name>@<release-version> --no-commit
+```
+NOTE: 
+ - You can pass the release version if you want. Without release version, it will take the latest code and intall 
+ - --no-commit is needed for <TBD>
+
+Example
+```shell
+forge install smartcontractkit/chainlink-brownie-contracts@1.2.0 --no-commit
+```
+
+### Update the foundry.toml
+After the forge install is complete, we need to tell foundry to point the `@chainlink/contracts` to the `lib` folder's `chainlink-brownie-contracts`.
+
+```toml
+remappings = ["@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/"]
+```
+
+## Build the Contracts using Foundry
+Once have enabled external imports, we can use the `forge build` command to build the contracts
+```shell
+forge build
+```
+
+## Compile and Deploy Script Using Foundry 
+### Compile
+```shell
+forge script script/DeployFundMe.s.sol
+```
+
+NOTE: Pass the rpc key and secret for deploying on the blockchain. 
