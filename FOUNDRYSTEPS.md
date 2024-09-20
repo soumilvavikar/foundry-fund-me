@@ -44,6 +44,22 @@ forge snapshot --mt testWithdrawFromMultipleFunders
 ```
 This command creates the .gas-snapshot file which contains the exact gas costs.  
 
+## Inspecting the Storage of Variables
+### Option 1
+```shell
+forge inspect FundMe storageLayout
+```
+This will give us the storage layout in the JSON format
+
+### Option 2
+```shell
+cast storage <contract address> <storage slot> <index>
+```
+
+NOTE: 
+- The immutable variables or constants are not stored in the storage, they are included in the bytecode of the contract
+- Marking variables private in the contract, doesn't mean they are private. They are on the blockchain and anybody can read it. 
+
 ## Enable Imports for External Contracts
 ### Installing dependencies in Foundry to be used as imports
 Without installing dependencies in the foundry we would not be able to use the external contracts like "AggregatorV3Interface.sol"
