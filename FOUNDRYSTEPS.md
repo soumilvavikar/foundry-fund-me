@@ -22,10 +22,17 @@ forge test
 forge test -mt <method name>
 
 forge test -mt testPriceFeedVersionIsAccurate
+
+forge test --mt testPriceFeedVersionIsAccurate --fork-url $SEPOLIA_RPC_URL
+
+forge coverage --fork-url $SEPOLIA_RPC_URL
 ```
 NOTE: 
 - Do `forge test --help` for more options
 - Pass -vv or -vvv to see stacetrace and console logs
+- `coverage` command tells how many lines of the code inside the contract are covered
+- --fork-url command helps let foundry know that we need to use the following chain URL instead of spinning a blank chain
+    - downside to this is that a lot of API calls will be made to the chain which will increase the cost 
 
 ## Enable Imports for Externqal Contracts
 ### Installing dependencies in Foundry to be used as imports
