@@ -6,4 +6,7 @@ libs = ["lib"]
 # Add the remapping to enable mapping external contracts to the location within the lib folder. 
 remappings = ["@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/"]
 
+# The below line helps enable running bash scripts via foundry
+## Precaution, we should try to keep as set to false as much as possible, as this allows foundry to run bash commands on our machines. 
+ffi = true
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

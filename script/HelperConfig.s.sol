@@ -90,10 +90,10 @@ contract HelperConfig is Script {
         );
         vm.stopBroadcast();
 
-        NetworkConfig memory anvilCOnfig = NetworkConfig({
+        NetworkConfig memory anvilConfig = NetworkConfig({
             priceFeed: address(mockPriceFeed)
         });
 
-        return anvilCOnfig;
+        return anvilConfig;
     }
 }
