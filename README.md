@@ -100,3 +100,11 @@ NOTE: Pass the rpc key and secret for deploying on the blockchain.
 ```shell
 forge script script/DeployFundMe.s.sol --rpc-url $RPC_URL --private-key $PRIVATE_KEY
 ```
+
+## MakeFile
+Tutorial: [MakeFile](https://makefiletutorial.com/)
+
+### Install Make
+```shell
+sudo apt install make
+```
