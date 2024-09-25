@@ -26,6 +26,8 @@ forge test -mt testPriceFeedVersionIsAccurate
 forge test --mt testPriceFeedVersionIsAccurate --fork-url $SEPOLIA_RPC_URL
 
 forge coverage --fork-url $SEPOLIA_RPC_URL
+
+forge coverage --report debug
 ```
 NOTE: 
 - Do `forge test --help` for more options
