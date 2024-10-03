@@ -27,9 +27,9 @@ This command will compile the contract and run the tests in the test folder.
 ```shell
 forge test
 
-forge test -mt <method name>
+forge test --mt <method name>
 
-forge test -mt testPriceFeedVersionIsAccurate
+forge test --mt testPriceFeedVersionIsAccurate
 
 forge test --mt testPriceFeedVersionIsAccurate --fork-url $SEPOLIA_RPC_URL
 
